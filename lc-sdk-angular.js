@@ -6,11 +6,19 @@ angular
       var config = {
         discoveryServers: [],
         services: {},
+        servicesRefreshInterval: 0,
         timeout: 1000
       };
 
+
       return function (cfg) {
         angular.extend(config, cfg);
+
+        if(config.servicesRefreshInterval){
+          setInterval(function(){
+            config.services = {};
+          }, config.servicesRefreshInterval);
+        }
 
         return {
           get: get,
