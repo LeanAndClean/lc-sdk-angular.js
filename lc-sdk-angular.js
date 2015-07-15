@@ -32,8 +32,8 @@ angular
         return ajax('get', serviceName, path);
       }
 
-      function post(serviceName, path, value) {
-        return ajax('post', serviceName, path, value);
+      function post(serviceName, path, value, username, password) {
+        return ajax('post', serviceName, path, value, username, password);
       }
 
       function put(serviceName, path, value) {
@@ -44,13 +44,16 @@ angular
         return ajax('delete', serviceName, path);
       }
 
-      function ajax(method, serviceName, path, value) {
+      function ajax(method, serviceName, path, value, username, password) {
         return getServiceUrls(serviceName).then(function (urls) {
           if (!urls.length) throw new Error('No endpoint configured for service ' + serviceName);
 
           // Map url to a list of operations
           var funcs = urls.map(function (url) {
-            return $http[method].bind($http, 'http://' + url + path, value, { timeout: config.timeout });
+            var conf = { timeout: config.timeout };
+            if(username && password) conf.headers = { 'Authorization': 'Basic ' + btoa(username + ':' + password) };
+            
+            return $http[method].bind($http, 'http://' + url + path, value, conf);
           });
 
           return invokeUntilResolved(funcs);
