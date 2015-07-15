@@ -41,7 +41,7 @@ angular
       }
 
       function del(serviceName, path) {
-        return ajax('delete', serviceName, path, value);
+        return ajax('delete', serviceName, path);
       }
 
       function ajax(method, serviceName, path, value) {
